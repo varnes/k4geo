@@ -388,7 +388,7 @@ namespace det {
      double zminLayer = getZmin(riLayer, BladeAngle, delZ);
           
      dd4hep::Position posLayer(0,0,(zminLayer-zminri+roLayer-ro)/2.);
-     std::cout << "for active, riLayer, ri, roLayer, ro = " << riLayer << " " << ri << " " << roLayer << " " << ro << std::endl;
+     lLog << MSG::DEBUG  << "for active, riLayer, ri, roLayer, ro = " << riLayer << " " << ri << " " << roLayer << " " << ro << endmsg;
      
      dd4hep::PlacedVolume LArVol_pv(activeVol.placeVolume(LArTotalLayerVol, posLayer));
      lLog << MSG::DEBUG << "LAr layer: " << iLayer << endmsg;
