@@ -5,7 +5,6 @@
 //#include "detectorSegmentations/GridTheta_k4geo.h"
 #include "DDSegmentation/Segmentation.h"
 #include "TVector3.h"
-#include <cmath>
 
 /** FCCSWEndcapTurbine_k4geo 
  *
@@ -130,7 +129,9 @@ public:
 
 protected:
   /// turbine blade angle
-  double m_bladeAngle;
+  std::vector<double> m_bladeAngle;
+  /// least common multiple of number of unit cells
+  int m_nUnitCellsLeastCommonMultiple;
   /// the number of bins in phi
   int m_phiBins;
   /// the coordinate offset in phi
