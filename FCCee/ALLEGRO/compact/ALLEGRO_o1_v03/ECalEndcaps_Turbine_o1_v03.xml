@@ -3,19 +3,14 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xs:noNamespaceSchemaLocation="http://www.lcsim.org/schemas/compact/1.0/compact.xsd">
 
-  <info name="FCCee_ECalEndcaps_Turbine"
-        title="Calorimeter endcaps"
-        author="E.Varnes, J.Rutherfoord, R.Walker"
-        url="no"
-        status="development"
-        version="1.0">
-    <comment>
-      Liquid argon EM calorimeter endcap design.
-      Electromagnetic part (EMEC) includes lead+steel absorber.
-      Turbine geometry.
-    </comment>
-  </info>
-
+  <!--
+  Calorimeter endcaps.
+  E.Varnes, J.Rutherfoord, R.Walker
+  Liquid argon EM calorimeter endcap design.
+  Electromagnetic part (EMEC) includes lead+steel absorber.
+  Turbine geometry.
+  -->
+  
   <define>
     <!-- cryostat -->
     <constant name="CryoEMECThicknessFront" value="50*mm"/>
@@ -53,16 +48,16 @@
     <constant name="EMECNumReadoutRhoLayersWheel3" value="34"/>
     <constant name="EMECNumReadoutZLayersWheel3" value="10"/> 
     <constant name="EMECnWheels" value="3" />
-    <constant name="EMECBladeAngle1" value="52*deg" />
-    <constant name="EMECBladeAngle2" value="52*deg" />
-    <constant name="EMECBladeAngle3" value="52*deg" />
-    <constant name="EMECAbsorberBladeThickness1" value="1.0*mm" />
-    <constant name="EMECAbsorberBladeThickness2" value="1.0*mm" />
-    <constant name="EMECAbsorberBladeThickness3" value="1.0*mm" />
+    <constant name="EMECBladeAngle1" value="49*deg" />
+    <constant name="EMECBladeAngle2" value="49*deg" />
+    <constant name="EMECBladeAngle3" value="49*deg" />
+    <constant name="EMECAbsorberBladeThickness1" value="1.3*mm" />
+    <constant name="EMECAbsorberBladeThickness2" value="1.3*mm" />
+    <constant name="EMECAbsorberBladeThickness3" value="1.3*mm" />
     <constant name="EMECElectrodeBladeThickness" value="1.3*mm" />
-    <constant name="EMECAbsorberBladeThicknessScaleFactor1" value="0.0" />
-    <constant name="EMECAbsorberBladeThicknessScaleFactor2" value="0.0" />
-    <constant name="EMECAbsorberBladeThicknessScaleFactor3" value="0.0" />
+    <constant name="EMECAbsorberBladeThicknessScaleFactor1" value="1.0" />
+    <constant name="EMECAbsorberBladeThicknessScaleFactor2" value="1.0" />
+    <constant name="EMECAbsorberBladeThicknessScaleFactor3" value="1.0" />
     <constant name="EMECSupportTubeThickness" value="10.0*mm" />
     <constant name="EMECRmin" value="CryoEndcap_front_rmin+CryoEMECThicknessInner" />
     <constant name="EMECRmax" value="CryoEndcap_rmax-CryoEMECThicknessOuter" />
@@ -84,9 +79,9 @@
     <constant name="EMEC_steel_thickness" value="0.1*mm"/>
      <!-- total amount of glue in one passive plate: it is divided for the outside layer on top and bottom -->
      <constant name="EMEC_glue_thickness" value="0.1*mm"/> 
-     <constant name="EMECnUnitCells1" value="448"/>
-     <constant name="EMECnUnitCells2" value="832"/>
-     <constant name="EMECnUnitCells3" value="1584"/>
+     <constant name="EMECnUnitCells1" value="384"/>
+     <constant name="EMECnUnitCells2" value="720"/>
+     <constant name="EMECnUnitCells3" value="1360"/>
      <!-- constants related to mechanical support structure -->
      <constant name="EMECSupportZGap" value="1*cm"/>
      <constant name="EMECSupportThickness" value="3*cm"/>
@@ -143,13 +138,13 @@
 	</supportTube>
 	<turbineBlade name="turbineBlade" angle1="EMECBladeAngle1" angle2="EMECBladeAngle2" angle3="EMECBladeAngle3" decreaseAnglePerWheel="false"  nUnitCells1="EMECnUnitCells1" nUnitCells2="EMECnUnitCells2" nUnitCells3="EMECnUnitCells3">
 	  <absorberBlade name="absorberBlade" thickness1="EMECAbsorberBladeThickness1" thickness2="EMECAbsorberBladeThickness2" thickness3="EMECAbsorberBladeThickness3"  thicknessScaleFactor1="EMECAbsorberBladeThicknessScaleFactor1" thicknessScaleFactor2="EMECAbsorberBladeThicknessScaleFactor2" thicknessScaleFactor3="EMECAbsorberBladeThicknessScaleFactor3" sensitive="false">
-	    <material name="Tungsten" />
+	    <material name="Lead" />
 	  </absorberBlade>
 	  <glue thickness="EMEC_glue_thickness" sensitive="false">
-            <material name="Tungsten"/>
+            <material name="lArCaloGlue"/>
           </glue>
           <cladding thickness="EMEC_steel_thickness" sensitive="false">
-            <material name="Tungsten"/>
+            <material name="lArCaloSteel"/>
           </cladding>
 	  <electrodeBlade name="electrodeBlade" thickness="EMECElectrodeBladeThickness" sensitive="false" vis="electrode_vis">
 	    <material name="PCB" />
