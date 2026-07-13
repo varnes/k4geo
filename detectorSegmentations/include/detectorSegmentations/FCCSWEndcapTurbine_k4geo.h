@@ -176,6 +176,8 @@ namespace DDSegmentation {
     inline const std::string& fieldNameLayer() const { return m_layerID; }
 
   private:
+    /// number of wheels
+    int m_numWheels;
     /// turbine blade angle in each wheel
     std::vector<double> m_bladeAngle;
     /// cosecant of turbine blade angle in each wheel
