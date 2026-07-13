@@ -112,6 +112,11 @@ namespace DDSegmentation {
      */
     double getGlobalPhi(const CellID aCellID) const;
 
+     /** Get the number of wheels
+     * return The number of wheels
+     */
+    inline int numWheels() const { return m_numWheels; }
+
     /** Get the grid size in z for a given wheel
      * return grid size in z
      */
