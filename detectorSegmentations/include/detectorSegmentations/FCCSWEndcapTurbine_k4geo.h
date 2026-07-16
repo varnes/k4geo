@@ -18,13 +18,16 @@ namespace DDSegmentation {
   class EndcapTurbineWheelLocalZ {
   public:
     // constructor with number of rho and z cells in wheel
-    EndcapTurbineWheelLocalZ(unsigned numReadoutLayersRho, unsigned numReadoutLayersZ) {m_localZ.resize(numReadoutLayersRho*numReadoutLayersZ);}
+    EndcapTurbineWheelLocalZ(unsigned numReadoutLayersRho, unsigned numReadoutLayersZ) {
+      m_localZ.resize(numReadoutLayersRho * numReadoutLayersZ);
+    }
     // set the value of the local z position for a given rho, z cell index
-    void setLocalZ(unsigned iRho, unsigned iZ, float zpos) {m_localZ[iRho*iZ] = zpos;}
+    void setLocalZ(unsigned iRho, unsigned iZ, float zpos) { m_localZ[iRho * iZ] = zpos; }
     // return the value of the local z position for a given rho, z cell index
-    float getLocalZ(unsigned iRho, unsigned iZ) const { return m_localZ[iRho*iZ];}
+    float getLocalZ(unsigned iRho, unsigned iZ) const { return m_localZ[iRho * iZ]; }
+
   private:
-    std::vector<float> m_localZ;  
+    std::vector<float> m_localZ;
   };
 
   class FCCSWEndcapTurbine_k4geo : public Segmentation {
@@ -112,7 +115,7 @@ namespace DDSegmentation {
      */
     double getGlobalPhi(const CellID aCellID) const;
 
-     /** Get the number of wheels
+    /** Get the number of wheels
      * return The number of wheels
      */
     inline int numWheels() const { return m_numWheels; }
