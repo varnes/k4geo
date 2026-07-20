@@ -300,32 +300,20 @@ namespace DDSegmentation {
         wlzs_new->emplace_back(wlz);
         for (int jRho = 0; jRho < m_numReadoutRhoLayers[jWheel]; jRho++) {
           for (int jZ = 0; jZ < m_numReadoutZLayers[jWheel]; jZ++) {
-            /// get center position of calibration cell
+            /// get center position of calibration cell.  The volume is formed from the intersection of a Trd2
+            /// and a Tube.  The z position is the center of the Trd2.  So, redo the calculation of the Trd2 size
+            /// from k4geo, and find its z center in global coordinates.  Then find the z center of the readout
+            /// cell in global coordinates, and subtract the two to get the local z position of the readout cell.
             unsigned jCalibRho = jRho / m_gangedRhoLayers[jWheel];
             float calibRhoMin = m_offsetRho[jWheel] + jCalibRho * m_gangedRhoLayers[jWheel] * m_gridSizeRho[jWheel];
             float calibRhoMax = calibRhoMin + m_gangedRhoLayers[jWheel] * m_gridSizeRho[jWheel];
-            int jCalibZ = jZ / m_gangedZLayers[jWheel];
-            float calibZPos[3];
-            calibZPos[0] = (jCalibZ - m_numCalibZLayers[jWheel] / 2) * m_gridSizeZ[jWheel] * m_gangedZLayers[jWheel] +
-                           (1 - m_numCalibZLayers[jWheel] % 2) * m_gridSizeZ[jWheel] * m_gangedZLayers[jWheel] / 2;
-            calibZPos[1] = calibZPos[0] + m_gridSizeZ[jWheel] * m_gangedZLayers[jWheel] / 2;
-            calibZPos[2] = calibZPos[1] - m_gridSizeZ[jWheel] * m_gangedZLayers[jWheel];
-
-            std::vector<float> calibZmaxArr, calibZminArr;
-            for (int jPos = 0; jPos < 3; jPos++) {
-              if (calibRhoMax > std::abs(calibZPos[jPos])) {
-                calibZmaxArr.push_back(std::sqrt(calibRhoMax * calibRhoMax - calibZPos[jPos] * calibZPos[jPos]));
-              } else {
-                calibZmaxArr.push_back(0);
-              }
-              if (calibRhoMin > std::abs(calibZPos[jPos])) {
-                calibZminArr.push_back(std::sqrt(calibRhoMin * calibRhoMin - calibZPos[jPos] * calibZPos[jPos]));
-              } else {
-                calibZminArr.push_back(1000000);
-              }
-            }
-            float calibZmax = *(std::ranges::max_element(calibZmaxArr));
-            float calibZmin = *(std::ranges::min_element(calibZminArr));
+            float calibZmax = calibRhoMax;
+            /// angFactor is equivalent to 1/tan(bladeAngle)^2
+            float angFactor = m_cscBladeAngle[jWheel] * m_cscBladeAngle[jWheel] - 1.;
+            float calibZmin =
+                std::sqrt(calibRhoMin * calibRhoMin - (m_numReadoutZLayers[jWheel] * m_numReadoutZLayers[jWheel] *
+                                                       m_gridSizeZ[jWheel] * m_gridSizeZ[jWheel] / 4) *
+                                                          angFactor);
             float calibZcent = (calibZmax + calibZmin) / 2.;
 
             // get center position of readout cell
