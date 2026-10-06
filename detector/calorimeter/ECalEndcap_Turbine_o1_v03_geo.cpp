@@ -815,7 +815,6 @@ namespace ECalEndcap_Turbine_o1_v03 {
     dd4hep::printout(dd4hep::INFO, "ECalEndcap_Turbine_o1_v03", "Will build %d wheels", nWheels);
 
     float supportTubeThickness = supportTubeElem.thickness();
-    float mechSupportZGap = aLcdd.constant<float>("EMECSupportRearZGap");
     float mechSupportRearThickness = aLcdd.constant<float>("EMECSupportRearThickness");
     float mechSupportFrontThickness = aLcdd.constant<float>("EMECSupportFrontThickness");
 
