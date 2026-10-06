@@ -28,7 +28,8 @@
     <constant name="BathThicknessFront" value="10*mm"/>
     <constant name="BathThicknessBack" value="40*mm"/>
     <constant name="BathThicknessInner" value="0*mm"/> <!-- placeholder in case future designs require space here -->
-    <constant name="BathThicknessOuter" value="50*mm"/>
+    <constant name="EMECSupportIbeamHeight" value="240*mm"/>
+    <constant name="BathThicknessOuter" value="50*mm+EMECSupportIbeamHeight"/>
     <!-- electromegnetic calorimeter: EMEC -->
     <constant name="EMEC_z1" value="CryoEndcap_z1 + CryoEMECThicknessFront + BathThicknessFront"/>offset
     <constant name="EMEC_z2" value="EMEC_max_z - CryoEMECThicknessBack - BathThicknessBack"/>
@@ -60,10 +61,10 @@
     <constant name="EMECAbsorberBladeThicknessScaleFactor2" value="1.0" />
     <constant name="EMECAbsorberBladeThicknessScaleFactor3" value="1.0" />
     <constant name="EMECSupportTubeThickness" value="10.0*mm" />
-    <constant name="EMECRmin" value="CryoEndcap_front_rmin+CryoEMECThicknessInner" />
-    <constant name="EMECRmax" value="CryoEndcap_rmax-CryoEMECThicknessOuter-EMECSupportTubeThickness" />
-    <constant name="EMECRadiusRatio" value="(EMECRmax/EMECRmin)^(1./EMECnWheels)" />
-    <constant name="EMECRminWheel1" value="EMECRmin" />
+    <constant name="EMEC_active_rmin" value = "EMEC_rmin1" />
+    <constant name="EMEC_active_rmax" value="EMEC_rmax-EMECSupportTubeThickness" />
+    <constant name="EMECRadiusRatio" value="(EMEC_active_rmax/EMEC_active_rmin)^(1./EMECnWheels)" />
+    <constant name="EMECRminWheel1" value="EMEC_active_rmin" />
     <constant name="EMECRmaxWheel1" value="EMECRminWheel1*EMECRadiusRatio" />
     <constant name="EMECRminWheel2" value="EMECRmaxWheel1" />
     <constant name="EMECRmaxWheel2" value="EMECRminWheel2*EMECRadiusRatio" />
@@ -83,19 +84,40 @@
      <constant name="EMECnUnitCells1" value="384"/>
      <constant name="EMECnUnitCells2" value="720"/>
      <constant name="EMECnUnitCells3" value="1360"/>
-     <!-- constants related to mechanical support structure -->
-     <constant name="EMECSupportZGap" value="1*cm"/>
-     <constant name="EMECSupportThickness" value="3*cm"/>
-     <constant name="EMECSupportNSpokes" value="8"/>
-     <constant name="EMECSupportSpokeWidth" value="5*cm"/>
-     <constant name="EMECSupportInnerRingdR" value="5*cm"/>
-     <constant name="EMECSupportInnerRingInnerRadius" value="EMECRmin"/>
-     <constant name="EMECSupportInnerRingOuterRadius" value="EMECRmin+EMECSupportInnerRingdR"/>
-     <constant name="EMECSupportOuterRingdR" value="10*cm"/>
-     <constant name="EMECSupportOuterRingOuterRadius" value="EMECRmax"/>
-     <constant name="EMECSupportOuterRingInnerRadius" value="EMECSupportOuterRingOuterRadius-EMECSupportOuterRingdR"/>
-     <constant name="EMECSupportMidRingdR" value="3*cm"/>
-     <constant name="EMECSupportZCenter" value="EMEC_z2+EMECSupportZGap-(EMEC_z1+EMEC_z2)/2."/>
+  <!-- constants related to mechanical support structure -->
+    <constant name="EMECSupportIbeamN" value="3"/>
+    <constant name="EMECSupportIbeamWebThickness" value="6.7*mm"/>
+    <constant name="EMECSupportIbeamFlangeWidth" value="120*mm"/>
+    <constant name="EMECSupportIbeamFlangeThickness" value="10.25*mm"/>
+    <constant name="EMECSupportIbeamFirstZ" value="EMEC_z1+EMECSupportIbeamFlangeWidth/2.-(EMEC_z1-BathThicknessFront+EMEC_z2+BathThicknessBack)/2." />
+    <constant name="EMECSupportIbeamLastZ" value="EMEC_z2-EMECSupportIbeamFlangeWidth/2.-(EMEC_z1-BathThicknessFront+EMEC_z2+BathThicknessBack)/2." />
+    <constant name="EMECSupportIbeamRmax" value="CryoEndcap_rmax-CryoEMECThicknessOuter" />
+    <constant name="EMECSupportIbeamRmin" value="EMECSupportIbeamRmax-EMECSupportIbeamHeight" />
+    <constant name="EMECSupportRearZGap" value="22*cm"/>
+    <constant name="EMECSupportRearThickness" value="3*cm"/>
+    <constant name="EMECSupportRearNSpokes" value="8"/>
+    <constant name="EMECSupportRearSpokeWidth" value="5*cm"/>
+    <constant name="EMECSupportInnerRingReardR" value="5*cm"/>
+    <constant name="EMECSupportInnerRingRearInnerRadius" value="CryoEndcap_front_rmin+CryoEMECThicknessInner"/>
+    <constant name="EMECSupportInnerRingRearOuterRadius" value="CryoEndcap_front_rmin+CryoEMECThicknessInner+EMECSupportInnerRingReardR"/>
+    <constant name="EMECSupportOuterRingReardR" value="10*cm"/>
+    <constant name="EMECSupportOuterRingRearOuterRadius" value="CryoEndcap_rmax-CryoEMECThicknessOuter-EMECSupportIbeamHeight"/>
+    <constant name="EMECSupportOuterRingRearInnerRadius" value="EMECSupportOuterRingRearOuterRadius-EMECSupportOuterRingReardR"/>
+    <constant name="EMECSupportMidRingReardR" value="3*cm"/>
+    <constant name="EMECSupportRearZCenter" value="EMEC_max_z - CryoEMECThicknessBack -EMECSupportRearThickness/2.-(CryoEndcap_z1 + CryoEMECThicknessFront + EMEC_max_z - CryoEMECThicknessBack )/2."/>
+    <constant name="EMECSupportFrontZGap" value="0*mm"/>
+    <constant name="EMECSupportFrontThickness" value="1*cm"/>
+    <constant name="EMECSupportFrontNSpokes" value="8"/>
+    <constant name="EMECSupportFrontSpokeWidth" value="10*cm"/>
+    <constant name="EMECSupportInnerRingFrontdR" value="5*cm"/>
+    <constant name="EMECSupportInnerRingFrontInnerRadius" value="CryoEndcap_front_rmin+CryoEMECThicknessInner"/>
+    <constant name="EMECSupportInnerRingFrontOuterRadius" value="CryoEndcap_front_rmin+CryoEMECThicknessInner+EMECSupportInnerRingFrontdR"/>
+    <constant name="EMECSupportOuterRingFrontdR" value="25*cm"/>
+    <constant name="EMECSupportOuterRingFrontOuterRadius" value="CryoEndcap_rmax-CryoEMECThicknessOuter-EMECSupportIbeamHeight"/>
+    <constant name="EMECSupportOuterRingFrontInnerRadius" value="EMECSupportOuterRingFrontOuterRadius-EMECSupportOuterRingFrontdR"/>
+    <constant name="EMECSupportMidRingFrontdR" value="7.5*cm"/>
+    <constant name="EMECSupportFrontZCenter" value="CryoEndcap_z1 + CryoEMECThicknessFront + 
+     EMECSupportFrontThickness/2.-(CryoEndcap_z1 + CryoEMECThicknessFront + EMEC_max_z - CryoEMECThicknessBack)/2."/>   
   </define>
 
 
@@ -144,26 +166,77 @@
 	    <material name="LAr" />
 	  </nobleLiquidGap>
 	</turbineBlade>
-	<mechSupport name="mechSupport"
-		     sensitive="false"
-		     nSpokes="EMECSupportNSpokes"
-		     spokeWidth="EMECSupportSpokeWidth">
-		     <innerRing>
-		       <dimensions rmin1 = "EMECSupportInnerRingInnerRadius"
-				   rmin2 = "EMECSupportInnerRingInnerRadius"
-				   rmax1= "EMECSupportInnerRingOuterRadius"
-				   rmax2= "EMECSupportInnerRingOuterRadius"
-				   dz= "EMECSupportThickness/2." />
-		     </innerRing>
-		     <outerRing>
-		       <dimensions rmin1 = "EMECSupportOuterRingInnerRadius"
-				   rmin2 = "EMECSupportOuterRingInnerRadius"
-				   rmax1= "EMECSupportOuterRingOuterRadius"
-				   rmax2= "EMECSupportOuterRingOuterRadius"
-				   dz= "EMECSupportThickness/2." />
-		     </outerRing>
-	  <material name="lArCaloSteel"/>
-	</mechSupport>
+
+  <mechSupportOuterIbeams name="mechSupportOuterIbeams"
+                           sensitive="false"
+                           nBeams="EMECSupportNIbeams">
+              <web name = "mechSupportOuterIbeamsWeb">
+                <dimensions rmin = "EMECSupportIbeamRmin+EMECSupportIbeamFlangeThickness"
+                            rmax = "EMECSupportIbeamRmax-EMECSupportIbeamFlangeThickness"
+                            dz = "EMECSupportIbeamWebThickness/2."
+                            />
+              </web>
+              <flange1 name = "mechSupportOuterIbeamsFlange1">
+                <dimensions rmin = "EMECSupportIbeamRmin"
+                            rmax = "EMECSupportIbeamRmin+EMECSupportIbeamFlangeThickness"
+                            dz = "EMECSupportIbeamFlangeWidth/2."
+                            />
+              </flange1>
+              <flange2 name = "mechSupportOuterIbeamsFlange2">
+                <dimensions rmin = "EMECSupportIbeamRmax-EMECSupportIbeamFlangeThickness"
+                            rmax = "EMECSupportIbeamRmax"
+                            dz = "EMECSupportIbeamFlangeWidth/2."
+                            />
+              </flange2>
+              <material name="lArCaloSteel"/>
+        </mechSupportOuterIbeams>
+          <mechSupportRear name="mechSupportRear"
+                     sensitive="false"
+                     nSpokes="EMECSupportRearNSpokes"
+                     spokeWidth="EMECSupportRearSpokeWidth"
+                     innerRingDr = "EMECSupportInnerRingReardR"
+                     midRingDr = "EMECSupportMidRingReardR"
+                     outerRingDr = "EMECSupportOuterRingReardR" >
+                     <innerRing>
+                       <dimensions rmin1 = "EMECSupportInnerRingRearInnerRadius"
+                                   rmin2 = "EMECSupportInnerRingRearInnerRadius"
+                                   rmax1= "EMECSupportInnerRingRearOuterRadius"
+                                   rmax2= "EMECSupportInnerRingRearOuterRadius"
+                                   dz= "EMECSupportRearThickness/2." />
+                     </innerRing>
+                     <outerRing>
+                       <dimensions rmin1 = "EMECSupportOuterRingRearInnerRadius"
+                                   rmin2 = "EMECSupportOuterRingRearInnerRadius"
+                                   rmax1= "EMECSupportOuterRingRearOuterRadius"
+                                   rmax2= "EMECSupportOuterRingRearOuterRadius"
+                                   dz= "EMECSupportRearThickness/2." />
+                     </outerRing>
+          <material name="lArCaloSteel"/>
+        </mechSupportRear>
+        <mechSupportFront name="mechSupportFront"
+                     sensitive="false"
+                     nSpokes="EMECSupportFrontNSpokes"
+                     spokeWidth="EMECSupportFrontSpokeWidth"
+                     innerRingDr = "EMECSupportInnerRingFrontdR"
+                     midRingDr = "EMECSupportMidRingFrontdR"
+                     outerRingDr = "EMECSupportOuterRingFrontdR" >
+                     <innerRing>
+                       <dimensions rmin1 = "EMECSupportInnerRingFrontInnerRadius"
+                                   rmin2 = "EMECSupportInnerRingFrontInnerRadius"
+                                   rmax1= "EMECSupportInnerRingFrontOuterRadius"
+                                   rmax2= "EMECSupportInnerRingFrontOuterRadius"
+                                   dz= "EMECSupportFrontThickness/2." />
+                     </innerRing>
+                     <outerRing>
+                       <dimensions rmin1 = "EMECSupportOuterRingFrontInnerRadius"
+                                   rmin2 = "EMECSupportOuterRingFrontInnerRadius"
+                                   rmax1= "EMECSupportOuterRingFrontOuterRadius"
+                                   rmax2= "EMECSupportOuterRingFrontOuterRadius"
+                                   dz= "EMECSupportFrontThickness/2." />
+                     </outerRing>
+                     <material name="CarbonFiber" />
+        </mechSupportFront> 
+
       </calorimeter>
     </detector>
  
