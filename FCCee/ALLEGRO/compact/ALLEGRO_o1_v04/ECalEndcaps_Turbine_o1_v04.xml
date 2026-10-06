@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lccdd xmlns:compact="http://www.lcsim.org/schemas/compact/1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xs:noNamespaceSchemaLocation="http://www.lcsim.org/schemas/compact/1.0/compact.xsd">
+
+  <!--
+  Calorimeter endcaps.
+  E.Varnes, J.Rutherfoord, R.Walker
+  Liquid argon EM calorimeter endcap design.
+  Electromagnetic part (EMEC) includes lead+steel absorber.
+  Turbine geometry.
+  -->
+  
+  <define>
+    <!-- cryostat -->
+    <constant name="CryoEMECThicknessFront" value="50*mm"/>
+    <constant name="CryoEMECThicknessBack" value="100*mm"/>
+    <constant name="CryoEMECThicknessInner" value="50*mm"/>
+    <constant name="CryoEMECThicknessOuter" value="100*mm"/>
+    <constant name="CryoEndcap_front_rmin" value="EMEC_inner_radius"/>
+    <constant name="CryoEndcap_back_rmin" value="EMEC_inner_radius"/>
+    <constant name="CryoEndcap_rmax" value="EMEC_outer_radius"/>
+    <constant name="CryoEndcap_z1" value="EMEC_min_z"/>
+    <constant name="CryoEndcap_z2" value="EMEC_max_z"/>
+    <constant name="CryoEndcap_dz" value="(EMEC_max_z - EMEC_min_z)*0.5"/>
+    <constant name="CryoEndcap_zOffset" value="EMEC_min_z + 0.5*(EMEC_max_z - EMEC_min_z)"/>
+    <!-- space between the cryostat and calorimeter -->
+    <constant name="BathThicknessFront" value="15*mm"/>
+    <constant name="BathThicknessBack" value="255*mm"/>
+    <constant name="BathThicknessInner" value="0*mm"/> <!-- placeholder in case future designs require space here -->
+    <constant name="EMECSupportIbeamHeight" value="240*mm"/>
+    <constant name="BathThicknessOuter" value="50*mm+EMECSupportIbeamHeight"/>
+    <!-- electromagnetic calorimeter: EMEC -->
+    <constant name="EMEC_z1" value="CryoEndcap_z1 + CryoEMECThicknessFront + BathThicknessFront"/>offset
+    <constant name="EMEC_z2" value="EMEC_max_z - CryoEMECThicknessBack - BathThicknessBack"/>
+    <constant name="EMEC_rmin1" value="CryoEndcap_front_rmin + CryoEMECThicknessInner + BathThicknessInner"/>
+    <constant name="EMEC_rmin2" value="EMEC_rmin1"/>
+    <constant name="EMEC_rmax" value="EMEC_outer_radius - CryoEMECThicknessOuter - BathThicknessOuter"/>
+    <!-- LAr thickness: double gap size -->
+    <constant name="EMECNumCalibRhoLayersWheel1" value="10"/>
+    <constant name="EMECNumCalibZLayersWheel1" value="5"/>
+    <constant name="EMECNumCalibRhoLayersWheel2" value="14"/>
+    <constant name="EMECNumCalibZLayersWheel2" value="1"/>
+    <constant name="EMECNumCalibRhoLayersWheel3" value="34"/>
+    <constant name="EMECNumCalibZLayersWheel3" value="1"/>
+    <constant name="EMECNumReadoutRhoLayersWheel1" value="10"/>
+    <constant name="EMECNumReadoutZLayersWheel1" value="10"/>
+    <constant name="EMECNumReadoutRhoLayersWheel2" value="14"/>
+    <constant name="EMECNumReadoutZLayersWheel2" value="10"/>
+    <constant name="EMECNumReadoutRhoLayersWheel3" value="34"/>
+    <constant name="EMECNumReadoutZLayersWheel3" value="10"/> 
+    <constant name="EMECnWheels" value="3" />
+    <constant name="EMECBladeAngle1" value="49*deg" />
+    <constant name="EMECBladeAngle2" value="49*deg" />
+    <constant name="EMECBladeAngle3" value="49*deg" />
+    <constant name="EMECAbsorberBladeThickness1" value="1.3*mm" />
+    <constant name="EMECAbsorberBladeThickness2" value="1.3*mm" />
+    <constant name="EMECAbsorberBladeThickness3" value="1.3*mm" />
+    <constant name="EMECElectrodeBladeThickness" value="1.3*mm" />
+    <constant name="EMECAbsorberBladeThicknessScaleFactor1" value="1.0" />
+    <constant name="EMECAbsorberBladeThicknessScaleFactor2" value="1.0" />
+    <constant name="EMECAbsorberBladeThicknessScaleFactor3" value="1.0" />
+    <constant name="EMECSupportTubeThickness" value="10.0*mm" />
+    <constant name="EMEC_active_rmin" value = "EMEC_rmin1" />
+    <constant name="EMEC_active_rmax" value="EMEC_rmax-EMECSupportTubeThickness" />
+    <constant name="EMECRadiusRatio" value="(EMEC_active_rmax/EMEC_active_rmin)^(1./EMECnWheels)" />
+    <constant name="EMECRminWheel1" value="EMEC_active_rmin" />
+    <constant name="EMECRmaxWheel1" value="EMECRminWheel1*EMECRadiusRatio" />
+    <constant name="EMECRminWheel2" value="EMECRmaxWheel1" />
+    <constant name="EMECRmaxWheel2" value="EMECRminWheel2*EMECRadiusRatio" />
+    <constant name="EMECRminWheel3" value="EMECRmaxWheel2" />
+    <constant name="EMECRmaxWheel3" value="EMECRminWheel3*EMECRadiusRatio" />
+    <constant name="EMECGridSizeRho1" value="(EMECRmaxWheel1-EMECRminWheel1-EMECSupportTubeThickness)/EMECNumReadoutRhoLayersWheel1" />
+    <constant name="EMECGridSizeRho2" value="(EMECRmaxWheel2-EMECRminWheel2-EMECSupportTubeThickness)/EMECNumReadoutRhoLayersWheel2" />
+    <constant name="EMECGridSizeRho3" value="(EMECRmaxWheel3-EMECRminWheel3-EMECSupportTubeThickness)/EMECNumReadoutRhoLayersWheel3" />
+    <constant name="EMECGridSizeZ1" value="(EMEC_z2-EMEC_z1)/EMECNumReadoutZLayersWheel1" />
+    <constant name="EMECGridSizeZ2" value="(EMEC_z2-EMEC_z1)/EMECNumReadoutZLayersWheel2" />
+    <constant name="EMECGridSizeZ3" value="(EMEC_z2-EMEC_z1)/EMECNumReadoutZLayersWheel3" />
+   
+    <!-- total amount of steel in one passive plate: it is divided for the outside layer on top and bottom -->
+    <constant name="EMEC_steel_thickness" value="0.1*mm"/>
+     <!-- total amount of glue in one passive plate: it is divided for the outside layer on top and bottom -->
+     <constant name="EMEC_glue_thickness" value="0.1*mm"/> 
+     <constant name="EMECnUnitCells1" value="384"/>
+     <constant name="EMECnUnitCells2" value="720"/>
+     <constant name="EMECnUnitCells3" value="1360"/>
+     <!-- constants related to mechanical support structure -->
+    <constant name="EMECSupportIbeamN" value="3"/>
+    <constant name="EMECSupportIbeamWebThickness" value="6.7*mm"/>
+    <constant name="EMECSupportIbeamFlangeWidth" value="120*mm"/>
+    <constant name="EMECSupportIbeamFlangeThickness" value="10.25*mm"/>
+    <constant name="EMECSupportIbeamFirstZ" value="EMEC_z1+EMECSupportIbeamFlangeWidth/2.-(EMEC_z1-BathThicknessFront+EMEC_z2+BathThicknessBack)/2." />
+    <constant name="EMECSupportIbeamLastZ" value="EMEC_z2-EMECSupportIbeamFlangeWidth/2.-(EMEC_z1-BathThicknessFront+EMEC_z2+BathThicknessBack)/2." />
+    <constant name="EMECSupportIbeamRmax" value="CryoEndcap_rmax-CryoEMECThicknessOuter" />
+    <constant name="EMECSupportIbeamRmin" value="EMECSupportIbeamRmax-EMECSupportIbeamHeight" />
+    <constant name="EMECSupportRearZGap" value="22*cm"/>
+    <constant name="EMECSupportRearThickness" value="3*cm"/>
+    <constant name="EMECSupportRearNSpokes" value="8"/>
+    <constant name="EMECSupportRearSpokeWidth" value="5*cm"/>
+    <constant name="EMECSupportInnerRingReardR" value="5*cm"/>
+    <constant name="EMECSupportInnerRingRearInnerRadius" value="CryoEndcap_front_rmin+CryoEMECThicknessInner"/>
+    <constant name="EMECSupportInnerRingRearOuterRadius" value="CryoEndcap_front_rmin+CryoEMECThicknessInner+EMECSupportInnerRingReardR"/>
+    <constant name="EMECSupportOuterRingReardR" value="10*cm"/>
+    <constant name="EMECSupportOuterRingRearOuterRadius" value="CryoEndcap_rmax-CryoEMECThicknessOuter-EMECSupportIbeamHeight"/>
+    <constant name="EMECSupportOuterRingRearInnerRadius" value="EMECSupportOuterRingRearOuterRadius-EMECSupportOuterRingReardR"/>
+    <constant name="EMECSupportMidRingReardR" value="3*cm"/>
+    <constant name="EMECSupportRearZCenter" value="EMEC_max_z - CryoEMECThicknessBack -EMECSupportRearThickness/2.-(CryoEndcap_z1 + CryoEMECThicknessFront + EMEC_max_z - CryoEMECThicknessBack )/2."/>
+    <constant name="EMECSupportFrontZGap" value="0*mm"/>
+    <constant name="EMECSupportFrontThickness" value="1*cm"/>
+    <constant name="EMECSupportFrontNSpokes" value="8"/>
+    <constant name="EMECSupportFrontSpokeWidth" value="10*cm"/>
+    <constant name="EMECSupportInnerRingFrontdR" value="5*cm"/>
+    <constant name="EMECSupportInnerRingFrontInnerRadius" value="CryoEndcap_front_rmin+CryoEMECThicknessInner"/>
+    <constant name="EMECSupportInnerRingFrontOuterRadius" value="CryoEndcap_front_rmin+CryoEMECThicknessInner+EMECSupportInnerRingFrontdR"/>
+    <constant name="EMECSupportOuterRingFrontdR" value="25*cm"/>
+    <constant name="EMECSupportOuterRingFrontOuterRadius" value="CryoEndcap_rmax-CryoEMECThicknessOuter-EMECSupportIbeamHeight"/>
+    <constant name="EMECSupportOuterRingFrontInnerRadius" value="EMECSupportOuterRingFrontOuterRadius-EMECSupportOuterRingFrontdR"/>
+    <constant name="EMECSupportMidRingFrontdR" value="7.5*cm"/>
+    <constant name="EMECSupportFrontZCenter" value="CryoEndcap_z1 + CryoEMECThicknessFront + 
+     EMECSupportFrontThickness/2.-(CryoEndcap_z1 + CryoEMECThicknessFront + EMEC_max_z - CryoEMECThicknessBack)/2."/>
+   </define>
+
+
+
+  <readouts>
+   <readout name="ECalEndcapTurbine">
+     <segmentation type="FCCSWEndcapTurbine_k4geo" offset_rho="EMECRminWheel1+EMECSupportTubeThickness EMECRminWheel2+EMECSupportTubeThickness EMECRminWheel3+EMECSupportTubeThickness" offset_z="EMEC_z1 EMEC_z1 EMEC_z1" offset_theta="0.1127" grid_size_rho="EMECGridSizeRho1 EMECGridSizeRho2 EMECGridSizeRho3" grid_size_z="EMECGridSizeZ1 EMECGridSizeZ2 EMECGridSizeZ3" mergedModules="1 1 1"/>
+     <id>system:4,cryo:1,type:3,subtype:3,side:-2,wheel:3,layer:12,module:11,rho:8,z:8</id> 
+
+    </readout> 
+  </readouts>
+
+  <detectors>
+     <!-- electromagnetic calorimeter -->
+    <detector id="EMEC_id" name="EMEC_turbine" type="ECalEndcap_Turbine_o1_v03" readout="ECalEndcapTurbine" vis="emec_envelope_vis" sensitive="true">
+      <type_flags type=" DetType_CALORIMETER + DetType_ELECTROMAGNETIC + DetType_ENDCAP"/>
+      <sensitive type="SimpleCalorimeterSD"/>
+       <dimensions rmin1="CryoEndcap_front_rmin" rmin2="CryoEndcap_front_rmin" rmax1="CryoEndcap_rmax" rmax2="CryoEndcap_rmax" dz="(CryoEndcap_z2-CryoEndcap_z1)/2."  z_offset="CryoEndcap_z1+(CryoEndcap_z2-CryoEndcap_z1)/2."/>
+      <calorimeter name="EM_endcap">
+	<dimensions rmin="EMEC_rmin1" rmax="EMEC_rmax" dz="(EMEC_z2-EMEC_z1)/2." z_offset="EMEC_z1+(EMEC_z2-EMEC_z1)/2."/>
+	<cryostat name="ECAL_EndCapCryo">
+          <material name="Aluminum" />
+          <dimensions rmin1="CryoEndcap_front_rmin" rmin2="CryoEndcap_front_rmin+CryoEMECThicknessInner" rmax1="CryoEndcap_rmax-CryoEMECThicknessOuter" rmax2="CryoEndcap_rmax" dz="(CryoEndcap_z2-CryoEndcap_z1-CryoEMECThicknessFront-CryoEMECThicknessBack)/2."/>
+          <front sensitive="false"/> <!-- low-|z| wall of the cryostat -->
+          <back sensitive="false"/> <!-- high-|z| wall of the cryostat -->
+	  <inner sensitive="false"/> <!-- inner radius wall of the cryostat -->
+          <outer sensitive="false"/> <!-- outer radius wall of the cryostat -->
+	</cryostat>
+          <supportTube name="supportTube" nWheels="EMECnWheels" thickness="EMECSupportTubeThickness" sensitive="false">
+            <material name="CarbonFiber" />
+          </supportTube>
+          <turbineBlade name="turbineBlade" angle1="EMECBladeAngle1" angle2="EMECBladeAngle2" angle3="EMECBladeAngle3" decreaseAnglePerWheel="false" nUnitCells1="EMECnUnitCells1" nUnitCells2="EMECnUnitCells2" nUnitCells3="EMECnUnitCells3">
+            <absorberBlade name="absorberBlade" thickness1="EMECAbsorberBladeThickness1" thickness2="EMECAbsorberBladeThickness2" thickness3="EMECAbsorberBladeThickness3" thicknessScaleFactor1="EMECAbsorberBladeThicknessScaleFactor1" thicknessScaleFactor2="EMECAbsorberBladeThicknessScaleFactor2" thicknessScaleFactor3="EMECAbsorberBladeThicknessScaleFactor3" sensitive="false">
+              <material name="Lead" />
+	  </absorberBlade>
+	  <glue thickness="EMEC_glue_thickness" sensitive="false">
+            <material name="lArCaloGlue"/>
+          </glue>
+          <cladding thickness="EMEC_steel_thickness" sensitive="false">
+            <material name="lArCaloSteel"/>
+          </cladding>
+	  <electrodeBlade name="electrodeBlade" thickness="EMECElectrodeBladeThickness" sensitive="false" vis="electrode_vis">
+	    <material name="PCB" />
+	  </electrodeBlade>
+	  <nobleLiquidGap name="nobleLiquidGap" sensitive="true">
+	    <material name="LAr" />
+	  </nobleLiquidGap>
+	</turbineBlade>
+  <mechSupportOuterIbeams name="mechSupportOuterIbeams"
+                           sensitive="false"
+                           nBeams="EMECSupportNIbeams">
+              <web name = "mechSupportOuterIbeamsWeb">
+                <dimensions rmin = "EMECSupportIbeamRmin+EMECSupportIbeamFlangeThickness"
+                            rmax = "EMECSupportIbeamRmax-EMECSupportIbeamFlangeThickness"
+                            dz = "EMECSupportIbeamWebThickness/2."
+                            />
+              </web>
+              <flange1 name = "mechSupportOuterIbeamsFlange1">
+                <dimensions rmin = "EMECSupportIbeamRmin"
+                            rmax = "EMECSupportIbeamRmin+EMECSupportIbeamFlangeThickness"
+                            dz = "EMECSupportIbeamFlangeWidth/2."
+                            />
+              </flange1>
+              <flange2 name = "mechSupportOuterIbeamsFlange2">
+                <dimensions rmin = "EMECSupportIbeamRmax-EMECSupportIbeamFlangeThickness"
+                            rmax = "EMECSupportIbeamRmax"
+                            dz = "EMECSupportIbeamFlangeWidth/2."
+                            />
+              </flange2>
+              <material name="lArCaloSteel"/>
+        </mechSupportOuterIbeams>
+        <mechSupportRear name="mechSupportRear"
+                     sensitive="false"
+                     nSpokes="EMECSupportRearNSpokes"
+                     spokeWidth="EMECSupportRearSpokeWidth"
+                     innerRingDr = "EMECSupportInnerRingReardR"
+                     midRingDr = "EMECSupportMidRingReardR"
+                     outerRingDr = "EMECSupportOuterRingReardR" >
+                     <innerRing>
+                       <dimensions rmin1 = "EMECSupportInnerRingRearInnerRadius"
+                                   rmin2 = "EMECSupportInnerRingRearInnerRadius"
+                                   rmax1= "EMECSupportInnerRingRearOuterRadius"
+                                   rmax2= "EMECSupportInnerRingRearOuterRadius"
+                                   dz= "EMECSupportRearThickness/2." />
+                     </innerRing>
+                     <outerRing>
+                       <dimensions rmin1 = "EMECSupportOuterRingRearInnerRadius"
+                                   rmin2 = "EMECSupportOuterRingRearInnerRadius"
+                                   rmax1= "EMECSupportOuterRingRearOuterRadius"
+                                   rmax2= "EMECSupportOuterRingRearOuterRadius"
+                                   dz= "EMECSupportRearThickness/2." />
+                     </outerRing>
+          <material name="lArCaloSteel"/>
+        </mechSupportRear>
+        <mechSupportFront name="mechSupportFront"
+                     sensitive="false"
+                     nSpokes="EMECSupportFrontNSpokes"
+                     spokeWidth="EMECSupportFrontSpokeWidth"
+                     innerRingDr = "EMECSupportInnerRingFrontdR"
+                     midRingDr = "EMECSupportMidRingFrontdR"
+                     outerRingDr = "EMECSupportOuterRingFrontdR" >
+                     <innerRing>
+                       <dimensions rmin1 = "EMECSupportInnerRingFrontInnerRadius"
+                                   rmin2 = "EMECSupportInnerRingFrontInnerRadius"
+                                   rmax1= "EMECSupportInnerRingFrontOuterRadius"
+                                   rmax2= "EMECSupportInnerRingFrontOuterRadius"
+                                   dz= "EMECSupportFrontThickness/2." />
+                     </innerRing>
+                     <outerRing>
+                       <dimensions rmin1 = "EMECSupportOuterRingFrontInnerRadius"
+                                   rmin2 = "EMECSupportOuterRingFrontInnerRadius"
+                                   rmax1= "EMECSupportOuterRingFrontOuterRadius"
+                                   rmax2= "EMECSupportOuterRingFrontOuterRadius"
+                                   dz= "EMECSupportFrontThickness/2." />
+                     </outerRing>
+                     <material name="CarbonFiber" />
+        </mechSupportFront>     
+      </calorimeter>
+    </detector>
+ 
+  </detectors>
+
+</lccdd>

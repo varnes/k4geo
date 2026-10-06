@@ -541,10 +541,15 @@ namespace ECalEndcap_Turbine_o1_v03 {
                               dd4hep::DetElement& bathDetElem) {
 
     dd4hep::xml::DetElement calo = aXmlElement.child(_Unicode(calorimeter));
-    dd4hep::xml::DetElement mechSupport = calo.child(_Unicode(mechSupport));
 
-    float mechSupportZCenter = aLcdd.constant<float>("EMECSupportZCenter");
+    for (const auto& supportName : {std::string{"Front"}, std::string{"Rear"}}) {
+      const float mechSupportZCenter =
+          aLcdd.constant<float>("EMECSupport" + supportName + "ZCenter");
 
+       dd4hep::xml::DetElement mechSupport = calo.child(_Unicode(mechSupportFront));
+       if (supportName == "Rear") {
+         mechSupport = calo.child(_Unicode(mechSupportRear));
+       }
     // make inner ring
     dd4hep::xml::DetElement innerRing = mechSupport.child(_Unicode(innerRing));
 
@@ -557,7 +562,7 @@ namespace ECalEndcap_Turbine_o1_v03 {
     dd4hep::Tube innerRingTube(innerRingRmin, innerRingRmax, innerRingdZ);
     dd4hep::Volume innerRingVol("mechSupportInnerRing", innerRingTube, aLcdd.material(mechSupport.materialStr()));
     dd4hep::PlacedVolume innerRing_pv = aEnvelope.placeVolume(innerRingVol, dd4hep::Position(0, 0, mechSupportZCenter));
-    dd4hep::DetElement innerRingDetElem(bathDetElem, "mechSupportInnerRing", 0);
+    dd4hep::DetElement innerRingDetElem(bathDetElem, "mechSupport" + supportName + "InnerRing", 0);
     innerRingDetElem.setPlacement(innerRing_pv);
 
     // make outer ring
@@ -572,7 +577,7 @@ namespace ECalEndcap_Turbine_o1_v03 {
     dd4hep::Tube outerRingTube(outerRingRmin, outerRingRmax, outerRingdZ);
     dd4hep::Volume outerRingVol("mechSupportOuterRing", outerRingTube, aLcdd.material(mechSupport.materialStr()));
     dd4hep::PlacedVolume outerRing_pv = aEnvelope.placeVolume(outerRingVol, dd4hep::Position(0, 0, mechSupportZCenter));
-    dd4hep::DetElement outerRingDetElem(bathDetElem, "mechSupportOuterRing", 0);
+    dd4hep::DetElement outerRingDetElem(bathDetElem, "mechSupport" + supportName + "OuterRing", 0);
     outerRingDetElem.setPlacement(outerRing_pv);
 
     // make intermediate rings
@@ -582,7 +587,7 @@ namespace ECalEndcap_Turbine_o1_v03 {
     dd4hep::xml::DetElement cryostat = calo.child(_Unicode(cryostat));
     dd4hep::xml::Dimension cryoDim(cryostat.dimensions());
 
-    float intermedRingdR = aLcdd.constant<float>("EMECSupportMidRingdR");
+    float intermedRingdR = aLcdd.constant<float>("EMECSupportMidRing"+supportName+"dR");
 
     double rmin = cryoDim.rmin2();
     float radiusRatio = aLcdd.constant<float>("EMECRadiusRatio");
@@ -596,15 +601,16 @@ namespace ECalEndcap_Turbine_o1_v03 {
                                      aLcdd.material(mechSupport.materialStr()));
       dd4hep::PlacedVolume intermedRing_pv =
           aEnvelope.placeVolume(intermedRingVol, dd4hep::Position(0, 0, mechSupportZCenter));
-      dd4hep::DetElement intermedRingDetElem(bathDetElem, "mechSupportInterMedRing" + std::to_string(iWheel), iWheel);
+        dd4hep::DetElement intermedRingDetElem(
+          bathDetElem, "mechSupport" + supportName + "InterMedRing" + std::to_string(iWheel), iWheel);
       intermedRingDetElem.setPlacement(intermedRing_pv);
       ro = ro * radiusRatio;
     }
     // make spokes
-    unsigned nSpokes = aLcdd.constant<unsigned>("EMECSupportNSpokes");
+    unsigned nSpokes = aLcdd.constant<unsigned>("EMECSupport" + supportName + "NSpokes");
     double rminSpoke = innerRingRmax;
     double rmaxSpoke = rmin * radiusRatio + (supportTubeThickness - intermedRingdR) / 2.;
-    double spokeWidth = aLcdd.constant<float>("EMECSupportSpokeWidth");
+    double spokeWidth = aLcdd.constant<float>("EMECSupport" + supportName + "SpokeWidth");
     for (unsigned iWheel = 0; iWheel < nWheelsXML; iWheel++) {
       if (iWheel == nWheelsXML - 1)
         rmaxSpoke = outerRingRmin;
@@ -623,8 +629,9 @@ namespace ECalEndcap_Turbine_o1_v03 {
             spokeVol, dd4hep::Transform3D(dd4hep::RotationZYX(-phiSpoke, 0, 0),
                                           dd4hep::Translation3D(rmid * TMath::Sin(phiSpoke),
                                                                 rmid * TMath::Cos(phiSpoke), mechSupportZCenter)));
-        dd4hep::DetElement spokeDetElem(bathDetElem,
-                                        "mechSupportSpoke" + std::to_string(iWheel) + std::to_string(iSpoke), 0);
+        dd4hep::DetElement spokeDetElem(
+          bathDetElem, "mechSupport" + supportName + "Spoke" + std::to_string(iWheel) + std::to_string(iSpoke),
+          0);
         spokeDetElem.setPlacement(spoke_pv);
       }
       rminSpoke = rmaxSpoke + intermedRingdR;
@@ -634,7 +641,43 @@ namespace ECalEndcap_Turbine_o1_v03 {
         rmaxSpoke = rminSpoke * radiusRatio + (supportTubeThickness - intermedRingdR) / 2.;
       }
     }
-  }
+
+    }
+
+    // Outer I-beams are a separate mechanical-support component.
+    dd4hep::xml::DetElement outerIbeams = calo.child(_Unicode(mechSupportOuterIbeams));
+    dd4hep::DetElement outerIbeamsDetElem(bathDetElem, "mechSupportOuterIbeams", 0);
+    const std::string iBeamPrefix = "EMECSupportIbeam";
+    const unsigned nIBeams = aLcdd.constant<unsigned>(iBeamPrefix + "N");
+    const double iBeamFlangeThickness = aLcdd.constant<float>(iBeamPrefix + "FlangeThickness");
+    const double iBeamFlangeWidth = aLcdd.constant<float>(iBeamPrefix + "FlangeWidth");
+    const double iBeamWebThickness = aLcdd.constant<float>(iBeamPrefix + "WebThickness");
+    const double iBeamRmin = aLcdd.constant<float>(iBeamPrefix + "Rmin");
+    const double iBeamRmax = aLcdd.constant<float>(iBeamPrefix + "Rmax");
+    const double iBeamFirstZ = aLcdd.constant<float>(iBeamPrefix + "FirstZ");
+    const double iBeamLastZ = aLcdd.constant<float>(iBeamPrefix + "LastZ");
+    const double iBeamZSpacing = (iBeamLastZ - iBeamFirstZ) / (nIBeams - 1);
+
+    dd4hep::Tube iBeamWeb(iBeamRmin+iBeamFlangeThickness, iBeamRmax-iBeamFlangeThickness, iBeamWebThickness / 2.);
+    dd4hep::Tube iBeamInnerFlange(iBeamRmin, iBeamRmin+iBeamFlangeThickness, iBeamFlangeWidth / 2.);
+    dd4hep::Tube iBeamOuterFlange(iBeamRmax-iBeamFlangeThickness, iBeamRmax, iBeamFlangeWidth / 2.);
+    dd4hep::UnionSolid iBeamFlange = dd4hep::UnionSolid(
+        iBeamInnerFlange, iBeamOuterFlange, dd4hep::Position(0, 0, 0));
+      dd4hep::Solid iBeamShape = dd4hep::UnionSolid(
+          iBeamWeb, iBeamFlange, dd4hep::Position(0, 0, 0));
+      dd4hep::Volume iBeamVol("mechSupportIBeam", iBeamShape,
+                              aLcdd.material(outerIbeams.materialStr()));
+      for (unsigned iBeam = 0; iBeam < nIBeams; ++iBeam) {
+        const double z = iBeamFirstZ + iBeam * iBeamZSpacing;
+        dd4hep::PlacedVolume iBeamPV = aEnvelope.placeVolume(
+            iBeamVol, dd4hep::Transform3D(dd4hep::RotationZYX(0, 0, 0),
+                                          dd4hep::Translation3D(0,0, z)));
+        dd4hep::DetElement iBeamDE(outerIbeamsDetElem,
+                                    "mechSupportIBeam" + std::to_string(iBeam), iBeam);
+        iBeamDE.setPlacement(iBeamPV);
+      }
+    }
+
 
   void buildOneSide_Turbine(dd4hep::Detector& aLcdd, dd4hep::DetElement& caloDetElem,
                             dd4hep::SensitiveDetector& aSensDet, dd4hep::Volume& aEnvelope,
@@ -779,17 +822,19 @@ namespace ECalEndcap_Turbine_o1_v03 {
     dd4hep::printout(dd4hep::INFO, "ECalEndcap_Turbine_o1_v03", "Will build %d wheels", nWheels);
 
     float supportTubeThickness = supportTubeElem.thickness();
-    float mechSupportZGap = aLcdd.constant<float>("EMECSupportZGap");
+    float mechSupportZGap = aLcdd.constant<float>("EMECSupportRearZGap");
+    float mechSupportRearThickness = aLcdd.constant<float>("EMECSupportRearThickness");
+    float mechSupportFrontThickness = aLcdd.constant<float>("EMECSupportFrontThickness");
 
-    double rmin = bathRmin;
-    double rmax = bathRmax - supportTubeThickness;
-    float radiusRatio = pow(rmax / rmin, 1. / nWheels);
+    float rmin = aLcdd.constant<float>("EMEC_active_rmin");
+    float rmax = aLcdd.constant<float>("EMEC_active_rmax");
+    float radiusRatio = aLcdd.constant<float>("EMECRadiusRatio");
     double ro = rmin * radiusRatio;
     double ri = rmin;
 
     for (unsigned iWheel = 0; iWheel < nWheels; iWheel++) {
 
-      dd4hep::Tube supportTube(ro, ro + supportTubeThickness, bathDelZ - (bathThicknessBack - mechSupportZGap) / 2.);
+      dd4hep::Tube supportTube(ro - supportTubeThickness, ro, bathDelZ - ( mechSupportFrontThickness + mechSupportRearThickness) / 2.);
 
       dd4hep::Volume supportTubeVol("supportTube", supportTube, aLcdd.material(supportTubeElem.materialStr()));
       if (supportTubeElem.isSensitive()) {
@@ -797,13 +842,13 @@ namespace ECalEndcap_Turbine_o1_v03 {
       }
       dd4hep::PlacedVolume supportTube_pv = bathVol.placeVolume(
           supportTubeVol,
-          dd4hep::Position(0, 0, zOffsetEnvelope + dim.dz() - (bathThicknessBack - mechSupportZGap) / 2.));
+          dd4hep::Position(0, 0, zOffsetEnvelope + dim.dz() + (mechSupportFrontThickness - mechSupportRearThickness) / 2.));
       supportTube_pv.addPhysVolID("cryo", 1);
       supportTube_pv.addPhysVolID("wheel", iWheel);
       dd4hep::DetElement supportTubeDetElem(bathDetElem, "supportTube_" + std::to_string(iWheel), 0);
       supportTubeDetElem.setPlacement(supportTube_pv);
 
-      buildWheel(aLcdd, aSensDet, bathVol, aXmlElement, bathDetElem, ri + supportTubeThickness, ro,
+      buildWheel(aLcdd, aSensDet, bathVol, aXmlElement, bathDetElem, ri, ro,
                  bathDelZ * 2 - bathThicknessFront - bathThicknessBack, (bathThicknessFront - bathThicknessBack) / 2.,
                  iWheel);
       ri = ro;
